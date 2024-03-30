@@ -1,26 +1,24 @@
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 from openai import OpenAI
 import base64
 import requests
 # store api key on config file as: api_key = "YOUR_OPENAI_API_KEY"
 import config
 
-api_key = config.api_key
 
-def extract_image(image_path):
-  with open(image_path, "rb") as image_file:
-    return base64.b64encode(image_file.read()).decode('utf-8')
 
-client = OpenAI(api_key=api_key)
 
-# extracts image stored in a file
-image = extract_image("image.jpg")
+def food_classify():
+  data = request.get_json()  # Get the JSON data sent from frontend
+  if 'image' not in data:
+      return jsonify({"message": "No image data found"}), 400
+  
+  image_data = data['image']
 
-headers = {
-  "Content-Type": "application/json",
-  "Authorization": f"Bearer {api_key}"
-}
+  api_key = config.api_key
 
-payload = {
+  payload = {
   "model": "gpt-4-vision-preview",
   "messages": [
     {
@@ -33,7 +31,7 @@ payload = {
         {
           "type": "image_url",
           "image_url": {
-            "url": f"data:image/jpeg;base64,{image}"
+            "url": f"data:image/jpeg;base64,{image_data}"
           }
         }
       ]
@@ -42,6 +40,16 @@ payload = {
   "max_tokens": 300
 }
 
-response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+  headers = {
+      "Content-Type": "application/json",
+      "Authorization": f"Bearer {api_key}"
+  }
 
-print(response.json()['choices'][0]['message']['content'])
+  response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)  # Adjust URL as needed
+
+  if response.status_code == 200:
+      print(response.json())
+      return jsonify({"message": response.json()}), 200
+  else:
+      print("FAILED")
+      return jsonify({"error": "Failed to process image"}), response.status_code
