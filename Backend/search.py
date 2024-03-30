@@ -22,3 +22,18 @@ def get_expiry(name):
     if not date.isnumeric():
         return 5
     return int(date)
+
+def get_type(name):
+    long_prompt = llm.invoke("Give me if " + name + " is a fruit, vegetable, drink, leftovers, condiment, or other. Only give the catagory in this format <object> - <Catagory>.")
+    print(long_prompt + "\n")
+    num_iterations = 1
+    catagory = long_prompt.split(" - ")[1]
+    while catagory.lower() not in ["fruit", "vegetable", "drink", "leftovers", "condiment", "other"] and num_iterations < 3:
+        long_prompt = llm.invoke("Give me if " + name + " is a fruit, vegetable, drink, leftovers, condiment, or other. Only give the catagory in this format <object> - <Catagory>.")
+        catagory = long_prompt.split(" - ")[1]
+        num_iterations += 1
+    if (catagory.lower() not in ["fruit", "vegetable", "drink", "leftovers", "condiment", "other"]):
+        return "other"
+    return catagory.lower()
+
+print(get_type("oreo"))
