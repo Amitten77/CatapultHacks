@@ -8,7 +8,6 @@ const Video = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      console.log("MEH")
       const imageSrc = webcamRef.current.getScreenshot();
       sendImageToBackend(imageSrc);
     }, 10000);
@@ -20,7 +19,7 @@ const Video = () => {
     const base64Image = imageSrc.split(',')[1];
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/upload', {
+      const response = await fetch('http://127.0.0.1:8000/upload', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image: base64Image })
