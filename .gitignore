@@ -1,1 +1,4 @@
 __pycache__/
+datasets/
+processed_data/
+config.py
