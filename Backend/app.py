@@ -42,7 +42,8 @@ def food_classify():
         {
           "type": "image_url",
           "image_url": {
-            "url": f"data:image/jpeg;base64,{image_data}"
+            "url": f"data:image/jpeg;base64,{image_data}",
+            "detail": "low"
           }
         }
       ]
@@ -76,6 +77,7 @@ def find_food_movement(food_items):
       return jsonify({"message": "No image data found"}), 400
   
   image_data = data['imageRecent']
+  image_prev = data['imageEarlier']
   # food_items = data['food_items']
   food_items_str = ','.join(str(item) for item in food_items)
 
@@ -89,12 +91,20 @@ def find_food_movement(food_items):
       "content": [
         {
           "type": "text",
-          "text": f"For each of the following items, {food_items_str}, list out whether the item is moving closer or farther away. Use only the words closer and farther in a csv format, such as: farther, closer, closer. If there are no food items, respond with a single space"
+          "text": f"Look at the following items in the first image: {food_items_str}. List out whether the item is closer or farther in the second image. Use ONLY the words closer and farther in a csv format, such as: closer, farther, farther. Do this for exactly {len(food_items)} items."
         },
         {
           "type": "image_url",
           "image_url": {
-            "url": f"data:image/jpeg;base64,{image_data}"
+            "url": f"data:image/jpeg;base64,{image_prev}",
+            "detail": "low"
+          }
+        },
+        {
+          "type": "image_url",
+          "image_url": {
+            "url": f"data:image/jpeg;base64,{image_data}",
+            "detail": "low"
           }
         }
       ]
