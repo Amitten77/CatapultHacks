@@ -5,13 +5,13 @@ if food has been added:
         new item
     else:
         old_food = food item database entry
-        if old_food.status = "REMOVE" and curr_time - old_food.time_removed < 2 hours:
+        if old_food.status = "REMOVED" and curr_time - old_food.time_removed < 2 hours:
             food has been added back in
             old_food.status = "IN FRIDGE
         else:
             new item
 if food has been removed:
-    food.status = "REMOVE"
+    food.status = "REMOVED"
     food.time_removed = curr_time
 
 Note: 
