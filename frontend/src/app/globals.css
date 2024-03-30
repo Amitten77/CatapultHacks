@@ -2,32 +2,95 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+
+/* Home Page */
+
+.hero{
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  margin: 0;
+  padding: 0;
+  width: calc(100vw - (100vw - 100%));
+  height: 100vh;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url("../../public/hero.jpg");
+  background-size: cover;
+  background-position: center;
+  overflow-x: hidden;
+  overflow-y: hidden;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+.header {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.header__content {
+  margin-left: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+.header__title{
+  color: white;
+  font-size: 5rem;
+  width: auto;
+  font-weight: 400;
+  /* margin-bottom: 5px; */
+  text-align: center;
+}
+.header__subtitle{
+  margin-top: 0;
+  margin-bottom: 75px;
+  font-size: 2rem;
+  font-weight: 400;
+  width: auto;
+  text-align: center;
+  color: #d3d1d1;
+}
+.header__links {
+  display: flex;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+/* .header__link:first-of-type {
+  margin-right: 20px;
+} */
+.header__link {
+  width: auto;
+  cursor: pointer;
+  text-decoration: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: 2px solid #ffffff;
+  transition: 0.15s;
 }
+
+.header__link:hover {
+  background-color: white;
+  color: black;
+}
+
+.about__switch__link {
+  margin-left: 30px;
+  width: auto;
+  cursor: pointer;
+  text-decoration: none;
+  color: white;
+  padding: 10px 5px;
+  border-radius: 20px;
+  border: 2px solid #ffffff;
+  transition: 0.15s;
+}
+
+.about__switch__link:hover {
+  background-color: white;
+  color: black;
+}
+
+
