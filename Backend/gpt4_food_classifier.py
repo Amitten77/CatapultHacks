@@ -28,7 +28,7 @@ payload = {
       "content": [
         {
           "type": "text",
-          "text": "List out the food items in this image in the following format: \neggs, strawberries, lemons"
+          "text": "List out the food items in this image in a csv format such as: \neggs, strawberries, lemons"
         },
         {
           "type": "image_url",

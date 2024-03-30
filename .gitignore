@@ -1,4 +1,3 @@
 __pycache__/
-datasets/
-processed_data/
+venv
 config.py
