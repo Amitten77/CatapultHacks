@@ -11,10 +11,10 @@ import config
 
 def food_classify():
   data = request.get_json()  # Get the JSON data sent from frontend
-  if 'image' not in data:
-      return jsonify({"message": "No image data found"}), 400
+  if 'imageRecent' not in data or 'imageEarlier' not in data:
+        return jsonify({"message": "No image data found"}), 400
   
-  image_data = data['image']
+  image_data = data['imageEarlier']
 
   api_key = config.api_key
 
@@ -59,12 +59,12 @@ def food_classify():
   # else:
   #     return jsonify({"error": "Failed to process image"}), response.status_code
 
-def food_movement(food_items):
+def find_food_movement(food_items):
   data = request.get_json()  # Get the JSON data sent from frontend
-  if 'image' not in data:
+  if 'imageRecent' not in data or 'imageEarlier' not in data:
       return jsonify({"message": "No image data found"}), 400
   
-  image_data = data['image']
+  image_data = data['imageRecent']
   # food_items = data['food_items']
   food_items_str = ','.join(str(item) for item in food_items)
 
