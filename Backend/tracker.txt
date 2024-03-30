@@ -1,0 +1,20 @@
+# tracker logic
+
+if food has been added:
+    if food not in database: 
+        new item
+    else:
+        old_food = food item database entry
+        if old_food.status = "REMOVE" and curr_time - old_food.time_removed > 2 hours:
+            food has been added back in
+            old_food.status = "IN FRIDGE
+        else:
+            new item
+if food has been removed:
+    food.status = "REMOVE"
+    food.time_removed = curr_time
+
+Note: 
+    for each new item:
+        find expiration date
+        add entry to database (item name, expiration data, "IN FRIDGE", curr_time)
