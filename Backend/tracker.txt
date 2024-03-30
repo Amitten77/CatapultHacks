@@ -22,3 +22,14 @@ Note:
 Note:
     to keep the database small, if a food has been removed, and it's been over 2 hours (food has been consumed),
     we could delete the entry from the database
+
+
+# food status logic
+
+take 2 images in quick succession
+run first image through gpt
+    if there's nothing in the frame, don't use the second image
+    else:
+        run the second image through gpt and ask it for whether the images are moving closer or further away
+        if image is moving closer -> item is being added
+        else item is being removed
