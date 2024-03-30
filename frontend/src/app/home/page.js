@@ -7,7 +7,7 @@ import React, { useState, useEffect } from 'react';
 const tourney = Tourney({ subsets: ["latin"] });
 
 const Home = () => {
-  let transition = false;
+  const [transition, setTransition] = useState(false);
 
   return (
     <div>
@@ -32,8 +32,8 @@ const Home = () => {
 
   
   function handleTransition() {
-    transition = !transition;
-  }
+    setTransition(!transition)
+  } 
 }
 
 
