@@ -20,7 +20,7 @@ const HomePage = () => {
                 </div>
                 <h2 className="header__subtitle">AI technology to your kitchen's refrigerator</h2>
                 <div className="header__links">
-                  <a className="header__link" href="home">Login</a>
+                  <a className="header__link" href="login">Login</a>
                 </div>
             </div>
             <div className="about__switch">

@@ -1,0 +1,35 @@
+# tracker logic
+
+if food has been added:
+    if food not in database: 
+        new item
+    else:
+        old_food = food item database entry
+        if old_food.status = "REMOVED" and curr_time - old_food.time_removed < 2 hours:
+            food has been added back in
+            old_food.status = "IN FRIDGE
+        else:
+            new item
+if food has been removed:
+    food.status = "REMOVED"
+    food.time_removed = curr_time
+
+Note: 
+    for each new item:
+        find expiration date
+        add entry to database (item name, expiration data, "IN FRIDGE", curr_time)
+
+Note:
+    to keep the database small, if a food has been removed, and it's been over 2 hours (food has been consumed),
+    we could delete the entry from the database
+
+
+# food status logic
+
+take 2 images in quick succession
+run first image through gpt
+    if there's nothing in the frame, don't use the second image
+    else:
+        run the second image through gpt and ask it for whether the images are moving closer or further away
+        if image is moving closer -> item is being added
+        else item is being removed
