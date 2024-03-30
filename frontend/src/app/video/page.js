@@ -35,10 +35,10 @@ const Video = () => {
   return (
     <Webcam
         audio={false}
-        height={window.innerHeight * 0.4}
+        height={window.innerHeight * 0.41}
         ref={webcamRef}
         screenshotFormat="image/jpeg"
-        width={window.innerWidth * 0.4}
+        width={window.innerWidth * 0.41}
         style={{ borderRadius: '15px' }}
     />
   );
