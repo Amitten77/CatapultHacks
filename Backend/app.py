@@ -23,7 +23,10 @@ def extract_image(image_path):
 
 @app.route('/upload', methods=['POST'])
 def upload():
-    return food_classify()
+    food_item, status_code = food_classify()
+    if status_code == 200 and len(food_item) > 0 and food_item[0] is not '':
+        food_movement, status_code = food_classify()
+    return jsonify({"message": {"food_item" : food_item, "food_movement": food_movement}}), status_code
 
 if __name__ == '__main__':
     app.run(debug=True)
