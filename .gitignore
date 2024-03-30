@@ -1,4 +1,4 @@
 __pycache__/
-datasets/
-processed_data/
+.DS_Store
+venv
 config.py

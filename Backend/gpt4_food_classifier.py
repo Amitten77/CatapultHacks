@@ -26,7 +26,7 @@ def food_classify():
       "content": [
         {
           "type": "text",
-          "text": "List out the food items in this image in the following format: \neggs, strawberries, lemons"
+          "text": "List out the food items in this image in a csv format such as: \neggs, strawberries, lemons. If there are no food items, respond with a single space"
         },
         {
           "type": "image_url",
@@ -46,10 +46,10 @@ def food_classify():
   }
 
   response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)  # Adjust URL as needed
+  content = response.json()['choices'][0]['message']['content']
+  food_items = list(map(str.strip, content.split(',')))
 
   if response.status_code == 200:
-      print(response.json())
-      return jsonify({"message": response.json()}), 200
+      return jsonify({"message": food_items}), 200
   else:
-      print("FAILED")
       return jsonify({"error": "Failed to process image"}), response.status_code
