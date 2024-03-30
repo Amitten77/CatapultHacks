@@ -2,8 +2,64 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Dashboard/Home page */
 
-/* Home Page */
+.main {
+  display: flex;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  scroll-snap-type: mandatory;
+  scroll-behavior: smooth;
+  background: #ecedf0;
+}
+
+.list {
+  width: 75vw;
+  min-width: 75vw;
+  background: #ecedf0;
+  scroll-snap-align: start;
+}
+
+.add {
+  height: 100vh;
+  width: calc(75vw - 25px);
+  min-width: 75vw;
+  background: #222;
+  /* box-shadow: -2px 0px 40px 0px #222; */
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.transition {
+  background: #33e6e3;
+  position: relative;
+  color: #222;
+  min-width: 50px;
+  min-height: 50px;
+  max-height: 50px;
+  text-align: center;
+  font-weight: 400;
+  font-size: 2rem;
+  border-radius: 100px;
+  margin-right: -25px;
+  top: calc(50% - 25px);
+}
+
+.transition:hover {
+  filter: brightness(0.9);
+  transition: 0.2s;
+}
+
+.add__text {
+  color: white;
+  font-size: 3rem;
+}
+
+/* Hero Page */
 
 .hero{
   font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
