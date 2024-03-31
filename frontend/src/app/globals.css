@@ -53,8 +53,8 @@
 }
 
 .list__content {
-  margin: 3vh 10vw;
-  height: 70vh;
+  margin: 1vw 10vw;
+  height: 52vh;
   /* background-color: lightblue; */
 }
 
@@ -114,9 +114,19 @@
   border-radius: 10px;
 }
 
+.item__image__container {
+  width: 6vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .item__image {
-  width: 5vw;
-  height: 5vw;
+  width: auto;
+  height: 4.5vw;
+  padding-top: 0.25vw;
+  padding-bottom: 0.25vw;
+  padding-left: 10px;
   margin-right: 10px;
 }
 
@@ -131,6 +141,23 @@
 
 .item:first-of-type {
   margin-right: 1vw;
+}
+
+.signout {
+  margin-left: 10vw;
+}
+
+.signout__button {
+  background-color: #ffffff;
+  color: black;
+  border: solid black 2px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  padding: 5px 10px;
+}
+
+.signout__button:hover {
+  filter: brightness(0.9);
 }
 
 /* Hero Page */
