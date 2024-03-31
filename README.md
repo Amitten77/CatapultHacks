@@ -3,6 +3,9 @@
 # Youtube: https://www.youtube.com/watch?v=PHmTB2MMCFo
 [![YouTube]({https://i.imgur.com/u0JzFba.png})]({https://www.youtube.com/watch?v=PHmTB2MMCFo} "Fridg.ai Demo")
 
+[![YouTube](https://github.com/Amitten77/CatapultHacks/blob/main/old_files/homePage.png)](https://www.youtube.com/watch?v=PHmTB2MMCFo)
+
+
 **Background**:
 In the United States, approximately 40% of the food harvested goes to waste each year. On average, an American individual discards over $2,700 worth of food annually. Surprisingly, 20% of Americans would be willing to accept a $10,000 pay cut to combat this issue. One of the top five reasons for food waste is the lack of organization in refrigerators.
 
