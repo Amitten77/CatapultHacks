@@ -23,6 +23,7 @@ const Home = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
+        console.log(data)
         setRecords(data); // Store the records in state
       } catch (error) {
         console.error("Could not fetch the data", error);
@@ -103,7 +104,7 @@ const Home = () => {
                   </div>
                     <div className="item__content"> 
                       <h2 className="item__title">{i + 1 != records.length ? records[i + 1].itemName : ""}</h2>
-                      <p className={formatAppDeadline(records[i + 1].expiration) == "Expired" ? "red item__expiration" : "item__expiration"}>{i + 1 != records.length ? formatAppDeadline(records[i + 1].expiration) : ""}</p>
+                      <p className={i + 1 != records.length ? (formatAppDeadline(records[i + 1].expiration) == "Expired" ? "red item__expiration" : "item__expiration") : ""}>{i + 1 != records.length ? formatAppDeadline(records[i + 1].expiration) : ""}</p>
                     </div>
                   </div>
                 </div>   
@@ -117,12 +118,14 @@ const Home = () => {
         {/* <a href={isTransitioned ? "#list" : "#add"} className="transition" ref={elementRef}>
           <p className="transition__button">{!isTransitioned ? "<" : ">"}</p>
         </a> */}
-        <a href="#list" className="transition">
+        {isTransitioned ?
+        <a href="#list" className="transition" onClick={() => setIsTransitioned(!isTransitioned)}>
+          <p className="transition__button">{"<"}</p>
+        </a> :
+        <a href="#add" className="transition" onClick={() => setIsTransitioned(!isTransitioned)}>
           <p className="transition__button">{">"}</p>
         </a>
-        <a href="#add" className="transition">
-          <p className="transition__button">{"<"}</p>
-        </a>
+        }
 
         
         <div className="add" id="add">
