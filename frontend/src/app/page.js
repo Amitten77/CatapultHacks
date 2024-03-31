@@ -16,11 +16,11 @@ const HomePage = () => {
         <div className="header" id="1">
             <div className="header__content header__content__margin">
                 <div className={tourney.className}>
-                <h1 className="header__title">Frozen AI</h1>
+                <h1 className="header__title">Fridg.AI</h1>
                 </div>
-                <h2 className="header__subtitle">AI technology to your kitchen's refrigerator</h2>
+                <h2 className="header__subtitle">Bringing AI technology to your refrigerator</h2>
                 <div className="header__links">
-                  <a className="header__link" href="home">Login</a>
+                  <a className="header__link" href="login">Login</a>
                 </div>
             </div>
             <div className="about__switch">
