@@ -57,7 +57,7 @@ const Home = () => {
           <div className="title__content">
             <div className="title__content__header">
               <img className="w-32 mr-5" src="logo.png"></img>
-              <h1 className={tourney.className}>Frozen AI</h1>
+              <h1 className={tourney.className}>Fridg.ai</h1>
             </div>
             <p>View your stored items in your refrigerator!</p>
             <div className="mt-8 sm:col-span-2">
