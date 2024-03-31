@@ -16,6 +16,10 @@ from gpt4_food_classifier import food_classify
 from black import is_black_screen
 import numpy as np
 import cv2
+from search import get_expiry, get_type
+from langchain_community.llms import Ollama
+from googleapiclient.discovery import build
+import datetime
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -23,7 +27,7 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 def food_classify():
   data = request.get_json()  # Get the JSON data sent from frontend
   if 'imageRecent' not in data or 'imageEarlier' not in data:
-        return jsonify({"message": "No image data found"}), 400
+        return jsonify({"message": []}), 400
   
   image_data = data['imageEarlier']
 
@@ -42,7 +46,8 @@ def food_classify():
         {
           "type": "image_url",
           "image_url": {
-            "url": f"data:image/jpeg;base64,{image_data}"
+            "url": f"data:image/jpeg;base64,{image_data}",
+            "detail": "low"
           }
         }
       ]
@@ -57,6 +62,7 @@ def food_classify():
   }
 
   response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)  # Adjust URL as needed
+  print(response)
   content = response.json()['choices'][0]['message']['content']
   food_items = list(map(str.strip, content.split(',')))
 
@@ -76,6 +82,7 @@ def find_food_movement(food_items):
       return jsonify({"message": "No image data found"}), 400
   
   image_data = data['imageRecent']
+  image_prev = data['imageEarlier']
   # food_items = data['food_items']
   food_items_str = ','.join(str(item) for item in food_items)
 
@@ -89,12 +96,20 @@ def find_food_movement(food_items):
       "content": [
         {
           "type": "text",
-          "text": f"For each of the following items, {food_items_str}, list out whether the item is moving closer or farther away. Use only the words closer and farther in a csv format, such as: farther, closer, closer. If there are no food items, respond with a single space"
+          "text": f"Look at the following items in the first image: {food_items_str}. List out whether the item is closer or farther in the second image. Use ONLY the words closer and farther in a csv format, such as: closer, farther, farther. Do this for exactly {len(food_items)} items."
         },
         {
           "type": "image_url",
           "image_url": {
-            "url": f"data:image/jpeg;base64,{image_data}"
+            "url": f"data:image/jpeg;base64,{image_prev}",
+            "detail": "low"
+          }
+        },
+        {
+          "type": "image_url",
+          "image_url": {
+            "url": f"data:image/jpeg;base64,{image_data}",
+            "detail": "low"
           }
         }
       ]
@@ -187,6 +202,52 @@ def upload():
         return jsonify({"message": {"food_item" : food_items, "food_movement": food_movement}}), status_code
     else:
         return jsonify({"message": {"food_item" : food_items, "food_movement": []}}), status_code
+    
+llm = Ollama(model="llama2")
+
+def get_expiry(name):
+    long_prompt = llm.invoke("Give me the shelf life of " + name + " in a refridgerator in days as an integer.")
+    date_index = long_prompt.rfind("days")
+    num_iterations = 1
+    while(date_index == -1 and num_iterations < 3):
+        long_prompt = llm.invoke("Give me the shelf life of " + name + " in a refridgerator in days as an integer.")
+        date_index = long_prompt.rfind("days")
+        num_iterations += 1
+    if (date_index == -1):
+         return datetime.date.today() + datetime.timedelta(days=5)
+    start_index = date_index - 2
+    while(1):
+        if not long_prompt[start_index].isnumeric():
+            break
+        start_index -= 1
+    date = long_prompt[start_index + 1:date_index - 1]
+    if not date.isnumeric():
+        datetime.date.today() + datetime.timedelta(days=5)
+    return datetime.date.today() + datetime.timedelta(days=int(date))
+
+
+def get_type(name):
+    long_prompt = llm.invoke("Give me if " + name + " is a fruit, vegetable, drink, leftovers, condiment, or other. Only give the catagory in this format <object> - <Catagory>.")
+    num_iterations = 1
+    catagory = long_prompt.split(" - ")[1]
+    while catagory.lower() not in ["fruit", "vegetable", "drink", "leftovers", "condiment", "other"] and num_iterations < 3:
+        long_prompt = llm.invoke("Give me if " + name + " is a fruit, vegetable, drink, leftovers, condiment, or other. Only give the catagory in this format <object> - <Catagory>.")
+        catagory = long_prompt.split(" - ")[1]
+        num_iterations += 1
+    if (catagory.lower() not in ["fruit", "vegetable", "drink", "leftovers", "condiment", "other"]):
+        return "other"
+    return catagory.lower()
+
+@app.route('/newitem', methods=['POST'])
+def newitem():
+   data = request.get_json()
+   word = data.get('word', '')
+   expiration = get_expiry(word)
+   category = get_type(word)
+
+   return jsonify({"message": {"expiration": expiration, "category": category}}), 200
+
+   
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000, debug=True)

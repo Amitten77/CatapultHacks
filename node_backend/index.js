@@ -69,3 +69,35 @@ app.post('/user', async (req, res) => {
         res.status(500).send('Error inserting user into database');
     }
 })
+
+app.get('/fridge', async (req, res) => {
+    try {
+        const collection = db.collection('Fridge');
+        const documents = await collection.find({}).toArray(); // Fetch all documents
+        res.status(200).json(documents);
+    } catch (err) {
+        console.error('Error fetching documents:', err);
+        res.status(500).send('Error fetching documents from database');
+    }
+});
+
+app.post('/fridge/item', async (req, res) => {
+    try {
+        const collection = db.collection('Fridge');
+        const newItem = {
+            itemName: req.body.itemName,
+            expiration: new Date(req.body.expiration),
+            date_added: new Date(req.body.date_added),
+            status: req.body.status,
+            time_removed: new Date(req.body.time_removed),
+            category: req.body.category
+        };
+        console.log(newItem);
+
+        const insertResult = await collection.insertOne(newItem);
+        res.status(201).json({message: "Success"});
+    } catch (err) {
+        console.error('Error inserting item into fridge:', err);
+        res.status(500).send('Error inserting item into database');
+    }
+});
