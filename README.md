@@ -1,8 +1,5 @@
 # Fridg.ai- CatapultHacks 2024
 
-# Youtube: https://www.youtube.com/watch?v=PHmTB2MMCFo
-[![YouTube]({https://i.imgur.com/u0JzFba.png})]({https://www.youtube.com/watch?v=PHmTB2MMCFo} "Fridg.ai Demo")
-
 [![YouTube](https://github.com/Amitten77/CatapultHacks/blob/main/old_files/homePage.png)](https://www.youtube.com/watch?v=PHmTB2MMCFo)
 
 
