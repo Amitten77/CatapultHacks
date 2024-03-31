@@ -112,7 +112,6 @@ app.put('/fridge/item', async (req, res) => {
     try {
         const collection = db.collection('Fridge');
         const query = { itemName: itemName };
-
         const update = {
             $set: updateFields
         };
@@ -120,10 +119,13 @@ app.put('/fridge/item', async (req, res) => {
         const updateResult = await collection.updateOne(query, update);
 
         if (updateResult.matchedCount === 0) {
+            console.log(1);
             return res.status(404).send('Item not found');
         } else if (updateResult.modifiedCount === 0) {
+            console.log(2);
             return res.status(200).send('No changes made to the item');
         } else {
+            console.log(3);
             return res.status(200).send('Item updated successfully');
         }
     } catch (err) {

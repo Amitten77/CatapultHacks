@@ -45,10 +45,6 @@ const updateFridgeItem = async (itemName, statusChange) => {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-
-    const data = await response.json();
-    console.log('Item updated successfully:', data);
-    return data; // Return the response data for further processing if necessary
   } catch (error) {
     console.error('Error updating item in fridge:', error);
     return null; // Return null or appropriate error handling
@@ -99,7 +95,7 @@ const Video = () => {
         body: JSON.stringify({
           itemName: itemName,
           updateFields: {
-            status: "IN_FRIDGE",
+            status: "IN FRIDGE",
             time_removed: currentTime.toISOString(),
             date_added: currentTime.toISOString(),
             expiration: newExpiration,
@@ -206,7 +202,8 @@ const Video = () => {
               );
               setRecords(prevRecords => [...prevRecords, additionalItem]);
             });
-          } else if (records.some(record => record.itemName === elementName && record.status === "IN_FRIDGE" && new Date() - new Date(record.date_added) >= 30 * 60 * 1000)){ //item is in fridge and its been in there for at least 30 minutes
+          } else if (records.some(record => record.itemName === elementName && record.status === "IN FRIDGE" && new Date() - new Date(record.date_added) >=  30 * 1000)){ //item is in fridge and its been in there for at least 30 minutes
+            console.log("ZACH EDEY")
             await updateFridgeItem(elementName, "REMOVED").then(() => {
               fetchData();
             });
@@ -215,7 +212,7 @@ const Video = () => {
             &&
             new Date() - new Date(record.time_removed) <= 2 * 60 * 60 * 1000 
             && new Date() - new Date(record.time_removed) >= 2 * 60 * 1000)) { //time removed is within 2 hours and greater than 1 minute
-              await updateFridgeItem(elementName, "IN_FRIDGE").then(() => {
+              await updateFridgeItem(elementName, "IN FRIDGE").then(() => {
                 fetchData();
               });
             } else if (records.some(record => record.itemName === elementName && 
