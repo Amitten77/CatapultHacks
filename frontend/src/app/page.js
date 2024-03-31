@@ -13,8 +13,8 @@ const HomePage = () => {
 
   return (
     <div className="hero">
-        <div className="header">
-            <div className="header__content">
+        <div className="header" id="1">
+            <div className="header__content header__content__margin">
                 <div className={tourney.className}>
                 <h1 className="header__title">Frozen AI</h1>
                 </div>
@@ -24,7 +24,16 @@ const HomePage = () => {
                 </div>
             </div>
             <div className="about__switch">
-              <a className="about__switch__link" href="#">⇒</a>
+              <a className="about__switch__link" href="#2">⇒</a>
+            </div>
+        </div>
+
+        <div className="header" id="2">
+            <div className="header__content">
+                <h2 className="header__text">Introducing Fridg.AI, a software that tracks food items entering and leaving your fridge, automatically notifying you when items are about to expire via an user-friendly web application. With advanced sensors and machine learning algorithms, it streamlines inventory management, reduces food waste, and enhances your kitchen experience.</h2>
+                <div className="header__links">
+                  <a className="header__link" href="#1">Back</a>
+                </div>
             </div>
         </div>
     </div>

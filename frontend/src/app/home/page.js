@@ -31,14 +31,14 @@ const Home = () => {
     fetchData();
   }, [])
 
-  // let websiteLoop = setInterval(() => {
-  //   rect = elementRef.current.getBoundingClientRect();
-  //   if (rect.x < window.innerWidth * 0.5) {
-  //     setIsTransitioned(true);
-  //   } else {
-  //     setIsTransitioned(false);
-  //   }
-  // }, 200);
+  let websiteLoop = setInterval(() => {
+    rect = elementRef.current.getBoundingClientRect();
+    if (rect.x < window.innerWidth * 0.5) {
+      setIsTransitioned(true);
+    } else {
+      setIsTransitioned(false);
+    }
+  }, 200);
 
   const handleFilterChange = (event) => {
     // arr.filter((el) => el.toLowerCase().includes(query.toLowerCase()));
@@ -114,15 +114,15 @@ const Home = () => {
             <a className="signout__button" href="http://localhost:3000/">Log Out</a>
           </div>
         </div>
-        {/* <a href={isTransitioned ? "#list" : "#add"} className="transition" ref={elementRef}>
+        <a href={isTransitioned ? "#list" : "#add"} className="transition" ref={elementRef}>
           <p className="transition__button">{!isTransitioned ? "<" : ">"}</p>
-        </a> */}
-        <a href="#list" className="transition">
+        </a>
+        {/* <a href="#list" className="transition">
           <p className="transition__button">{">"}</p>
         </a>
         <a href="#add" className="transition">
           <p className="transition__button">{"<"}</p>
-        </a>
+        </a> */}
 
         
         <div className="add" id="add">
