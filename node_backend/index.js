@@ -80,22 +80,37 @@ app.get('/fridge', async (req, res) => {
         res.status(500).send('Error fetching documents from database');
     }
 });
-
 app.post('/fridge/item', async (req, res) => {
     try {
         const collection = db.collection('Fridge');
+        const itemName = req.body.itemName;
+        const words = itemName.split(/\s+/).map(word => 
+            word.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
+        );
+        const regexPattern = words.join('|');
+
+        // Check if there's an item with any of the same words (case-insensitive)
+        const existingItem = await collection.findOne({
+            itemName: { $regex: new RegExp(regexPattern, 'i') }
+        });
+
+        if (existingItem) {
+            return res.status(409).json({ message: "An item with a matching word in the name already exists." });
+        }
+
+        // If no existing item was found, proceed to insert the new item
         const newItem = {
-            itemName: req.body.itemName,
+            itemName: itemName,
             expiration: new Date(req.body.expiration),
-            date_added: new Date(req.body.date_added),
+            date_added: new Date(),
             status: req.body.status,
-            time_removed: new Date(req.body.time_removed),
+            time_removed: req.body.time_removed ? new Date(req.body.time_removed) : null,
             category: req.body.category
         };
         console.log(newItem);
 
         const insertResult = await collection.insertOne(newItem);
-        res.status(201).json({message: "Success"});
+        res.status(201).json({ message: "Success" });
     } catch (err) {
         console.error('Error inserting item into fridge:', err);
         res.status(500).send('Error inserting item into database');

@@ -271,7 +271,7 @@ def can_add():
     print(name, entries)
     if len(name.split()) > 3:
         return jsonify({"invalid": True })
-    invalid_entries = ["sorry", "couldn't", "not", "unable"]
+    invalid_entries = ["sorry", "couldn't", "not", "unable", "space"]
     _, invalid_score = process.extractOne(name.lower(), invalid_entries, scorer=fuzz.token_set_ratio)
     if len(entries) == 0:
         if invalid_score >= 75:
