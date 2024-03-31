@@ -13,65 +13,32 @@ const Home = () => {
 
   const [isTransitioned, setIsTransitioned] = useState(false);
   const [filter, setFilter] = useState("Post Date");
-  const [records, setRecords] = useState([
-    {
-      _id: 1,
-      title: 'Fresh Apple',
-      expiration: new Date(2024, 3, 1),
-      category: "Fruit"
-    },
-    {
-      _id: 2,
-      title: 'Carrots',
-      expiration: new Date(2024, 5, 1),
-      category: "Vegetable"
-    },
-    {
-      _id: 3,
-      title: 'Wine',
-      expiration: '2024-04-08',
-      category: "Drink"
-    },
-    {
-      _id: 4,
-      title: 'Chicken Sandwich',
-      expiration: '2024-04-05',
-      category: "Left Overs",
-    },
-    {
-      _id: 5,
-      title: 'Ketchup',
-      expiration: '2024-03-01',
-      category: "Condiment"
-    },
-    {
-      _id: 6,
-      title: 'Mustard',
-      expiration: '2024-03-01',
-      category: "Condiment"
-    },
-    {
-      _id: 7,
-      title: 'Chocolate Icecream',
-      expiration: '2024-04-06',
-      category: "Other"
-    },
-    {
-      _id: 8,
-      title: 'Dr. Pepper',
-      expiration: '2024-04-06',
-      category: "Drink"
-    }
-  ])
+  const [records, setRecords] = useState([]);
 
-  let websiteLoop = setInterval(() => {
-    rect = elementRef.current.getBoundingClientRect();
-    if (rect.x < window.innerWidth * 0.5) {
-      setIsTransitioned(true);
-    } else {
-      setIsTransitioned(false);
-    }
-  }, 200);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/fridge');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setRecords(data); // Store the records in state
+      } catch (error) {
+        console.error("Could not fetch the data", error);
+      }
+    };
+    fetchData();
+  }, [])
+
+  // let websiteLoop = setInterval(() => {
+  //   rect = elementRef.current.getBoundingClientRect();
+  //   if (rect.x < window.innerWidth * 0.5) {
+  //     setIsTransitioned(true);
+  //   } else {
+  //     setIsTransitioned(false);
+  //   }
+  // }, 200);
 
   const handleFilterChange = (event) => {
     // arr.filter((el) => el.toLowerCase().includes(query.toLowerCase()));
@@ -125,7 +92,7 @@ const Home = () => {
                     <img className="item__image" src={records[i].category + ".png"}></img> 
                   </div>
                     <div className="item__content">
-                      <h2 className="item__title">{records[i].title}</h2>
+                      <h2 className="item__title">{records[i].itemName}</h2>
                       <p className="item__expiration">{formatAppDeadline(records[i].expiration)}</p>
                     </div>
                   </div>
@@ -134,7 +101,7 @@ const Home = () => {
                     <img className="item__image" src={i + 1 != records.length ? records[i + 1].category + ".png" : ""}></img>
                   </div>
                     <div className="item__content"> 
-                      <h2 className="item__title">{i + 1 != records.length ? records[i + 1].title : ""}</h2>
+                      <h2 className="item__title">{i + 1 != records.length ? records[i + 1].itemName : ""}</h2>
                       <p className="item__expiration">{i + 1 != records.length ? formatAppDeadline(records[i + 1].expiration) : ""}</p>
                     </div>
                   </div>
@@ -146,15 +113,15 @@ const Home = () => {
             <a className="signout__button" href="http://localhost:3000/">Log Out</a>
           </div>
         </div>
-        <a href={isTransitioned ? "#list" : "#add"} className="transition" ref={elementRef}>
+        {/* <a href={isTransitioned ? "#list" : "#add"} className="transition" ref={elementRef}>
           <p className="transition__button">{!isTransitioned ? "<" : ">"}</p>
-        </a>
-        {/* <a href="#list" className="transition">
+        </a> */}
+        <a href="#list" className="transition">
           <p className="transition__button">{">"}</p>
         </a>
         <a href="#add" className="transition">
           <p className="transition__button">{"<"}</p>
-        </a> */}
+        </a>
 
         
         <div className="add" id="add">

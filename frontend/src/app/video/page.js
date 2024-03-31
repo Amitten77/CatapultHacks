@@ -24,6 +24,37 @@ const addItemToFridge = async (item) => {
   }
 };
 
+const updateFridgeItem = async (itemName, statusChange) => {
+  const currentTime = new Date().toISOString(); // Convert the current time to ISO string format
+
+  try {
+    const response = await fetch('http://localhost:3001/fridge/item', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        itemName: itemName,
+        updateFields: {
+          status: statusChange,
+          time_removed: currentTime,
+        },
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('Item updated successfully:', data);
+    return data; // Return the response data for further processing if necessary
+  } catch (error) {
+    console.error('Error updating item in fridge:', error);
+    return null; // Return null or appropriate error handling
+  }
+};
+
 const getNewItemInfo = async (word) => {
   try {
     const response = await fetch('http://127.0.0.1:8000/newitem', {
@@ -39,7 +70,7 @@ const getNewItemInfo = async (word) => {
     }
 
     const data = await response.json();
-    console.log(data);
+    return data;
   } catch (error) {
     console.error('Error fetching new item info:', error);
   }
@@ -51,23 +82,61 @@ const Video = () => {
   const [records, setRecords] = useState([]);
   const [webcamVisible, setWebcamVisible] = useState(false);
 
+  const updateFridgeItemNew = async (itemName) => {
+    const currentTime = new Date();
+    const oldDateAdded = new Date(item.date_added);
+    const oldExpiration = new Date(item.expiration);
+    const expirationDifference = oldExpiration - oldDateAdded;
+    const newExpiration = new Date(currentTime.getTime() + expirationDifference).toISOString();
+    const item = records.find(record => record.itemName === itemName);
+  
+    try {
+      const response = await fetch('http://localhost:3001/fridge/item', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          itemName: itemName,
+          updateFields: {
+            status: "IN_FRIDGE",
+            time_removed: currentTime.toISOString(),
+            date_added: currentTime.toISOString(),
+            expiration: newExpiration,
+          },
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      console.log('Item updated successfully:', data);
+      return data; 
+    } catch (error) {
+      console.error('Error updating item in fridge:', error);
+      return null;
+    }
+  };
+
   const handleToggleWebcam = () => {
-    setWebcamVisible(!webcamVisible); // Toggle the visibility
+    setWebcamVisible(!webcamVisible);
+  };
+  const fetchData = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/fridge');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setRecords(data);
+    } catch (error) {
+      console.error("Could not fetch the data", error);
+    }
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('http://localhost:3001/fridge');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setRecords(data); // Store the records in state
-      } catch (error) {
-        console.error("Could not fetch the data", error);
-      }
-    };
     fetchData();
   }, []);
 
@@ -91,6 +160,7 @@ const Video = () => {
     const base64ImageR = imageSrcRecent.split(',')[1];
     const base64ImageE = imageSrcEarlier.split(',')[1];
 
+
     try {
       const response = await fetch('http://127.0.0.1:8000/upload', {
         method: 'POST',
@@ -101,31 +171,62 @@ const Video = () => {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
+      console.log(data, "RAHUL BANSAL")
       if (data.message.length === 0 || data.message.food_item.length == 1 && data.message.food_item[0] === '') {
         console.log("Nothing in sight")
       } else {
-        data.message.food_item.forEach(element => {
-          if (!records.some(record => record.itemName === element)) {
-            const additions = getNewItemInfo(element);
-            let currentDate = new Date();
-            let result = new Date(currentDate);
-            result.setDate(result.getDate() + Number(additions.expiration));
-            const additionalItem = {
-              itemName: element,
-              date_added: currentDate,
-              status: "IN FRIDGE",
-              time_removed: currentDate,
-              category: additions.category,
-              expiration: result
-            }
-            addItemToFridge(
-              additionalItem
-            );
-            setRecords(prevRecords => [...prevRecords, addedItem]);
-          } else if (records.some(record => record.itemName === element && record.status === "IN_FRIDGE")){
-
+        const itemNames = records.map(record => record.itemName);
+        let elementName;
+        for (const element of data.message.food_item) {
+          const response = await fetch('http://127.0.0.1:8000/canAdd', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: element, entries: itemNames})
+          });
+          const data = await response.json();
+          if (data.invalid) {
+            continue;
+          } else {
+            elementName = data.name;
           }
-        })
+          if (!records.some(record => record.itemName === elementName)) {
+            await getNewItemInfo(elementName).then(additions => {
+              let currentDate = new Date();
+              let result = new Date(additions.message.expiration);
+              const additionalItem = {
+                itemName: elementName,
+                date_added: currentDate,
+                status: "IN FRIDGE",
+                time_removed: currentDate,
+                category: additions.message.category,
+                expiration: result
+              }
+              addItemToFridge(
+                additionalItem
+              );
+              setRecords(prevRecords => [...prevRecords, additionalItem]);
+            });
+          } else if (records.some(record => record.itemName === elementName && record.status === "IN_FRIDGE" && new Date() - new Date(record.date_added) >= 30 * 60 * 1000)){ //item is in fridge and its been in there for at least 30 minutes
+            await updateFridgeItem(elementName, "REMOVED").then(() => {
+              fetchData();
+            });
+          } else if (records.some(record => record.itemName === elementName && 
+            record.status === "REMOVED"
+            &&
+            new Date() - new Date(record.time_removed) <= 2 * 60 * 60 * 1000 
+            && new Date() - new Date(record.time_removed) >= 2 * 60 * 1000)) { //time removed is within 2 hours and greater than 1 minute
+              await updateFridgeItem(elementName, "IN_FRIDGE").then(() => {
+                fetchData();
+              });
+            } else if (records.some(record => record.itemName === elementName && 
+              record.status === "REMOVED"
+              &&
+              new Date() - new Date(record.timeRemoved) > 2 * 60 * 60 * 1000)) {
+                await updateFridgeItemNew(elementName).then(() => {
+                  fetchData();
+                })
+              }
+          }
       }
       setResponseMessage(data.message); // Update the state with the response
     } catch (error) {

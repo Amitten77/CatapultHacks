@@ -101,3 +101,33 @@ app.post('/fridge/item', async (req, res) => {
         res.status(500).send('Error inserting item into database');
     }
 });
+
+app.put('/fridge/item', async (req, res) => {
+    const { itemName, updateFields } = req.body;
+
+    if (!itemName) {
+        return res.status(400).send('Item name is required for updating');
+    }
+
+    try {
+        const collection = db.collection('Fridge');
+        const query = { itemName: itemName };
+
+        const update = {
+            $set: updateFields
+        };
+
+        const updateResult = await collection.updateOne(query, update);
+
+        if (updateResult.matchedCount === 0) {
+            return res.status(404).send('Item not found');
+        } else if (updateResult.modifiedCount === 0) {
+            return res.status(200).send('No changes made to the item');
+        } else {
+            return res.status(200).send('Item updated successfully');
+        }
+    } catch (err) {
+        console.error('Error updating item in fridge:', err);
+        res.status(500).send('Error updating item in database');
+    }
+});

@@ -12,14 +12,13 @@ import base64
 import requests
 # store api key on config file as: api_key = "YOUR_OPENAI_API_KEY"
 import config
-from gpt4_food_classifier import food_classify
-from black import is_black_screen
 import numpy as np
 import cv2
-from search import get_expiry, get_type
 from langchain_community.llms import Ollama
 from googleapiclient.discovery import build
 import datetime
+from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -62,7 +61,7 @@ def food_classify():
   }
 
   response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)  # Adjust URL as needed
-  print(response)
+  print("hi ",response.json())
   content = response.json()['choices'][0]['message']['content']
   food_items = list(map(str.strip, content.split(',')))
 
@@ -124,6 +123,7 @@ def find_food_movement(food_items):
   }
 
   response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)  # Adjust URL as needed
+  print("bye ", response.json())
   content = response.json()['choices'][0]['message']['content']
   food_movement = list(map(str.strip, content.split(',')))
 
@@ -247,7 +247,30 @@ def newitem():
 
    return jsonify({"message": {"expiration": expiration, "category": category}}), 200
 
-   
+@app.route('/canAdd', methods=['POST'])
+def can_add():
+    data = request.get_json()
+    if not data or 'name' not in data or 'entries' not in data:
+        return jsonify({"error": "Missing name or entries in request"}), 400
+    name = data['name']
+    entries = data['entries']
+    print(name, entries)
+    if len(name.split()) > 3:
+        return jsonify({"invalid": True })
+    invalid_entries = ["sorry", "couldn't", "not", "unable"]
+    _, invalid_score = process.extractOne(name, invalid_entries, scorer=fuzz.token_set_ratio)
+    if len(entries) == 0:
+        if invalid_score >= 75:
+            return jsonify({"invalid": True})
+        else:
+            return jsonify({"invalid": False, "name": name})
+    match, score = process.extractOne(name, entries, scorer=fuzz.token_set_ratio)
+    if invalid_score > score:
+        return jsonify({"invalid": True })
+    if score >= 75:
+        return jsonify({"invalid": False, "name": match})
+    else:
+        return jsonify({"invalid": False, "name": name})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000, debug=True)
