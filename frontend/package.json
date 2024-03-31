@@ -12,7 +12,8 @@
     "next": "14.1.4",
     "react": "^18",
     "react-dom": "^18",
-    "react-webcam": "^7.2.0"
+    "react-webcam": "^7.2.0",
+    "sweetalert2": "^11.10.7"
   },
   "devDependencies": {
     "autoprefixer": "^10.0.1",

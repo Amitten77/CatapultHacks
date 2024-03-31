@@ -1,6 +1,7 @@
 "use client"
 import React, { useState, useRef, useEffect } from 'react';
 import Webcam from "react-webcam";
+import Swal from 'sweetalert2'
 
 
 const addItemToFridge = async (item) => {
@@ -15,10 +16,18 @@ const addItemToFridge = async (item) => {
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
+    } else {
     const data = await response.json();
-    console.log('Item added successfully:', data);
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false, 
+      timer: 3000, 
+      timerProgressBar: true,
+      icon: 'success', 
+      title: item.itemName + " Added", 
+    });
+  }
   } catch (error) {
     console.error('Error adding item to fridge:', error);
   }
@@ -44,6 +53,16 @@ const updateFridgeItem = async (itemName, statusChange) => {
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
+    } else {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false, 
+        timer: 3000, 
+        timerProgressBar: true,
+        icon: 'success', 
+        title: itemName + " Removed", 
+      });
     }
   } catch (error) {
     console.error('Error updating item in fridge:', error);
@@ -242,7 +261,6 @@ const Video = () => {
         style={{ borderRadius: '15px' }}
       />
     ) : (<div className="false__fridge" style={{width: window.innerWidth * 0.41, height: window.innerHeight * 0.6, borderRadius: '15px' }}>Yooo</div>)}
-    <p className="text-white">{itemIdentified}</p>
     <div className='mt-4 mx-64'>
     <button 
        type="button"
