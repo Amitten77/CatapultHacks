@@ -32,15 +32,6 @@ const Home = () => {
     fetchData();
   }, [])
 
-  let websiteLoop = setInterval(() => {
-    rect = elementRef.current.getBoundingClientRect();
-    if (rect.x < window.innerWidth * 0.5) {
-      setIsTransitioned(true);
-    } else {
-      setIsTransitioned(false);
-    }
-  }, 200);
-
   const handleFilterChange = (event) => {
     // arr.filter((el) => el.toLowerCase().includes(query.toLowerCase()));
     setFilter(event.target.value);
@@ -122,10 +113,7 @@ const Home = () => {
         <a href="#add" className="transition" onClick={() => setIsTransitioned(!isTransitioned)}>
           <p className="transition__button">{">"}</p>
         </a>
-        <a href="#add" className="transition">
-          <p className="transition__button">{"<"}</p>
-        </a>
-}
+        }
         
         <div className="add" id="add">
           <div className="title__content text-white">
