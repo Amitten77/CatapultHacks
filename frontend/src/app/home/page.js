@@ -93,7 +93,7 @@ const Home = () => {
                     <img className="item__image" src={records[i].category + ".png"}></img> 
                   </div>
                     <div className="item__content">
-                      <h2 className="item__title">{records[i].title}</h2>
+                      <h2 className="item__title">{records[i].itemName}</h2>
                       <p className={formatAppDeadline(records[i].expiration) == "Expired" ? "red item__expiration" : "item__expiration"}>{formatAppDeadline(records[i].expiration)}</p>
                     </div>
                   </div>
@@ -102,7 +102,7 @@ const Home = () => {
                     <img className="item__image" src={i + 1 != records.length ? records[i + 1].category + ".png" : ""}></img>
                   </div>
                     <div className="item__content"> 
-                      <h2 className="item__title">{i + 1 != records.length ? records[i + 1].title : ""}</h2>
+                      <h2 className="item__title">{i + 1 != records.length ? records[i + 1].itemName : ""}</h2>
                       <p className={formatAppDeadline(records[i + 1].expiration) == "Expired" ? "red item__expiration" : "item__expiration"}>{i + 1 != records.length ? formatAppDeadline(records[i + 1].expiration) : ""}</p>
                     </div>
                   </div>
