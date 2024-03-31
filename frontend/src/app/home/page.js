@@ -11,7 +11,7 @@ const Home = () => {
   const elementRef = useRef(null);
   let rect = 0;
 
-  const [isTransitioned, setIsTransitioned] = useState(false);
+  const [isTransitioned, setIsTransitioned] = useState(true);
   const [filter, setFilter] = useState("Post Date");
   const [records, setRecords] = useState([]);
 
