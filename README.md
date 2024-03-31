@@ -10,3 +10,9 @@ Introducing our Smart Fridge Companion, a sleek device that tracks food items en
 
 ![alt text](https://i.imgur.com/Se57mNy.png)
 
+**Our Application:**
+
+![alt_text](old_files/add.png)
+
+![alt_text](old_files/homePage.png)
+
