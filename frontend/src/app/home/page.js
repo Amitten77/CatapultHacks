@@ -42,7 +42,7 @@ const Home = () => {
         setRecords([...records].sort((a, b) => new Date(a.expiration) - new Date(b.expiration)));
         break;
       case "Category":
-        setRecords([...records].sort((a, b) => b.category.length - a.category.length));
+        setRecords([...records].sort((a, b) => b.category.charCodeAt(0) - a.category.charCodeAt(0)));
         break;
       default:
         // Handle any other case or do nothing

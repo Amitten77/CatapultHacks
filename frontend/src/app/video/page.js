@@ -77,6 +77,7 @@ const Video = () => {
   const [responseMessage, setResponseMessage] = useState("Dylan"); // State to store the backend response
   const [records, setRecords] = useState([]);
   const [webcamVisible, setWebcamVisible] = useState(false);
+  const [itemIdentified, setItemIndentified] = useState("No Item Found");
 
   const updateFridgeItemNew = async (itemName) => {
     const currentTime = new Date();
@@ -199,6 +200,9 @@ const Video = () => {
                 category: additions.message.category,
                 expiration: result
               }
+
+              setItemIndentified(additionalItem.itemName)
+              console.log("... " + additionalItem.itemName)
               addItemToFridge(
                 additionalItem
               );
@@ -238,7 +242,8 @@ const Video = () => {
         width={window.innerWidth * 0.41}
         style={{ borderRadius: '15px' }}
       />
-    ) : (<div class="false__fridge" style={{width: window.innerWidth * 0.41, height: window.innerHeight * 0.6, borderRadius: '15px' }}>Yooo</div>)}
+    ) : (<div className="false__fridge" style={{width: window.innerWidth * 0.41, height: window.innerHeight * 0.6, borderRadius: '15px' }}>Yooo</div>)}
+    <p className="text-white">{itemIdentified}</p>
     <div className='mt-4 mx-64'>
     <button 
        type="button"
