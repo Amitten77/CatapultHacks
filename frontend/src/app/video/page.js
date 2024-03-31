@@ -77,7 +77,7 @@ const Video = () => {
   const [responseMessage, setResponseMessage] = useState("Dylan"); // State to store the backend response
   const [records, setRecords] = useState([]);
   const [webcamVisible, setWebcamVisible] = useState(false);
-  const [itemIdentified, setItemIndentified] = useState("No Item Found");
+  const [itemIdentified, setItemIndentified] = useState("");
 
   const updateFridgeItemNew = async (itemName) => {
     const currentTime = new Date();
@@ -202,7 +202,6 @@ const Video = () => {
               }
 
               setItemIndentified(additionalItem.itemName)
-              console.log("... " + additionalItem.itemName)
               addItemToFridge(
                 additionalItem
               );
