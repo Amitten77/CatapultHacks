@@ -69,3 +69,67 @@ app.post('/user', async (req, res) => {
         res.status(500).send('Error inserting user into database');
     }
 })
+
+app.get('/fridge', async (req, res) => {
+    try {
+        const collection = db.collection('Fridge');
+        const documents = await collection.find({}).toArray(); // Fetch all documents
+        res.status(200).json(documents);
+    } catch (err) {
+        console.error('Error fetching documents:', err);
+        res.status(500).send('Error fetching documents from database');
+    }
+});
+
+app.post('/fridge/item', async (req, res) => {
+    try {
+        const collection = db.collection('Fridge');
+        const newItem = {
+            itemName: req.body.itemName,
+            expiration: new Date(req.body.expiration),
+            date_added: new Date(req.body.date_added),
+            status: req.body.status,
+            time_removed: new Date(req.body.time_removed),
+            category: req.body.category
+        };
+        console.log(newItem);
+
+        const insertResult = await collection.insertOne(newItem);
+        res.status(201).json({message: "Success"});
+    } catch (err) {
+        console.error('Error inserting item into fridge:', err);
+        res.status(500).send('Error inserting item into database');
+    }
+});
+
+app.put('/fridge/item', async (req, res) => {
+    const { itemName, updateFields } = req.body;
+
+    if (!itemName) {
+        return res.status(400).send('Item name is required for updating');
+    }
+
+    try {
+        const collection = db.collection('Fridge');
+        const query = { itemName: itemName };
+        const update = {
+            $set: updateFields
+        };
+
+        const updateResult = await collection.updateOne(query, update);
+
+        if (updateResult.matchedCount === 0) {
+            console.log(1);
+            return res.status(404).send('Item not found');
+        } else if (updateResult.modifiedCount === 0) {
+            console.log(2);
+            return res.status(200).send('No changes made to the item');
+        } else {
+            console.log(3);
+            return res.status(200).send('Item updated successfully');
+        }
+    } catch (err) {
+        console.error('Error updating item in fridge:', err);
+        res.status(500).send('Error updating item in database');
+    }
+});
