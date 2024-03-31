@@ -151,13 +151,21 @@
   background-color: #ffffff;
   color: black;
   border: solid black 2px;
-  border-radius: 20px;
+  border-radius: 10px;
   font-size: 0.8rem;
   padding: 5px 10px;
 }
 
 .signout__button:hover {
   filter: brightness(0.9);
+}
+
+.hover__cam__button:hover {
+  filter: brightness(0.9);
+}
+
+.false__fridge {
+  background: #000;
 }
 
 /* Hero Page */
@@ -250,6 +258,10 @@
   color: black;
 }
 
+.red {
+  color: #de6f6f;
+  font-weight: 800;
+}
 
 .hide {
   display: none;

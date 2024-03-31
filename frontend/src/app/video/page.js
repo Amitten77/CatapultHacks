@@ -136,7 +136,7 @@ const Video = () => {
 
   return (
     <>
-    {webcamVisible && (
+    {webcamVisible ? (
       <Webcam
         audio={false}
         height={window.innerHeight * 0.41}
@@ -145,13 +145,15 @@ const Video = () => {
         width={window.innerWidth * 0.41}
         style={{ borderRadius: '15px' }}
       />
-    )}
-       <button 
+    ) : (<div class="false__fridge" style={{width: window.innerWidth * 0.41, height: window.innerHeight * 0.6, borderRadius: '15px' }}>Yooo</div>)}
+    <div className='mt-4 mx-64'>
+    <button 
        type="button"
-       className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+       className="hover__cam__button rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-black"
        onClick={handleToggleWebcam}>
         {webcamVisible ? 'Close Fridge' : 'Open Fridge'}
       </button>
+    </div>
     </>
   );
 }
