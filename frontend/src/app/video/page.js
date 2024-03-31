@@ -140,13 +140,10 @@ const Video = () => {
     const interval = setInterval(() => {
       if (webcamVisible && webcamRef.current) {
         const imageSrcEarlier = webcamRef.current.getScreenshot();
-        setTimeout(() => {
-          const imageSrcRecent = webcamRef.current.getScreenshot();
-     
-          sendImageToBackend(imageSrcRecent, imageSrcEarlier);
-        }, 500);
+        sendImageToBackend(imageSrcEarlier, imageSrcEarlier);
+
       }
-    }, 5000);
+    }, 2000);
   
     return () => clearInterval(interval);
   }, [webcamVisible]); 
@@ -174,6 +171,7 @@ const Video = () => {
         const itemNames = records.map(record => record.itemName);
         let elementName;
         for (const element of data.message.food_item) {
+          console.log(element);
           const response = await fetch('http://127.0.0.1:8000/canAdd', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -181,11 +179,15 @@ const Video = () => {
           });
           const data = await response.json();
           if (data.invalid) {
+            console.log(data.invalid)
+            console.log(element, "INVALID")
             continue;
           } else {
             elementName = data.name;
           }
+          console.log(element, "ELEMENT NAME", elementName);
           if (!records.some(record => record.itemName === elementName)) {
+            console.log(elementName, records)
             await getNewItemInfo(elementName).then(additions => {
               let currentDate = new Date();
               let result = new Date(additions.message.expiration);
@@ -203,25 +205,18 @@ const Video = () => {
               setRecords(prevRecords => [...prevRecords, additionalItem]);
             });
           } else if (records.some(record => record.itemName === elementName && record.status === "IN FRIDGE" && new Date() - new Date(record.date_added) >=  30 * 1000)){ //item is in fridge and its been in there for at least 30 minutes
-            console.log("ZACH EDEY")
-            await updateFridgeItem(elementName, "REMOVED").then(() => {
-              fetchData();
-            });
+            await updateFridgeItem(elementName, "REMOVED")
           } else if (records.some(record => record.itemName === elementName && 
             record.status === "REMOVED"
             &&
             new Date() - new Date(record.time_removed) <= 2 * 60 * 60 * 1000 
             && new Date() - new Date(record.time_removed) >= 2 * 60 * 1000)) { //time removed is within 2 hours and greater than 1 minute
-              await updateFridgeItem(elementName, "IN FRIDGE").then(() => {
-                fetchData();
-              });
+              await updateFridgeItem(elementName, "IN FRIDGE")
             } else if (records.some(record => record.itemName === elementName && 
               record.status === "REMOVED"
               &&
               new Date() - new Date(record.timeRemoved) > 2 * 60 * 60 * 1000)) {
-                await updateFridgeItemNew(elementName).then(() => {
-                  fetchData();
-                })
+                await updateFridgeItemNew(elementName)
               }
           }
       }

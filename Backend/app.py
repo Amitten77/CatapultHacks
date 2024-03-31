@@ -61,7 +61,6 @@ def food_classify():
   }
 
   response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)  # Adjust URL as needed
-  print("hi ",response.json())
   content = response.json()['choices'][0]['message']['content']
   food_items = list(map(str.strip, content.split(',')))
 
@@ -161,69 +160,84 @@ def upload():
     if is_black_screen(image_data_bytes):
         return jsonify({"message": "Fridge is closed."}), 200
 
-    api_key = config.api_key
+    # api_key = config.api_key
 
-    payload = {
-    "model": "gpt-4-vision-preview",
-    "messages": [
-        {
-        "role": "user",
-        "content": [
-            {
-            "type": "text",
-            "text": "List out the food items in this image in a csv format such as: \neggs, strawberries, lemons. If there are no food items, respond with a single space"
-            },
-            {
-            "type": "image_url",
-            "image_url": {
-                "url": f"data:image/jpeg;base64,{image_data}",
-                "detail": "low"
-            }
-            }
-        ]
-        }
-    ],
-    "max_tokens": 300
-    }
+    # payload = {
+    # "model": "gpt-4-vision-preview",
+    # "messages": [
+    #     {
+    #     "role": "user",
+    #     "content": [
+    #         {
+    #         "type": "text",
+    #         "text": "List out the food items in this image in a csv format such as: \neggs, strawberries, lemons. If there are no food items, respond with a single space"
+    #         },
+    #         {
+    #         "type": "image_url",
+    #         "image_url": {
+    #             "url": f"data:image/jpeg;base64,{image_data}",
+    #             "detail": "low"
+    #         }
+    #         }
+    #     ]
+    #     }
+    # ],
+    # "max_tokens": 300
+    # }
 
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
+    # headers = {
+    #     "Content-Type": "application/json",
+    #     "Authorization": f"Bearer {api_key}"
+    # }
 
-    response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)  # Adjust URL as needed
-    content = response.json()['choices'][0]['message']['content']
-    if "sorry" in content.lower():
-        return jsonify({"message": []}), 200
+    # response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)  # Adjust URL as needed
+    # content = response.json()['choices'][0]['message']['content']
 
     food_items, status_code = food_classify()
     if status_code == 200 and len(food_items) > 0 and food_items[0] != '':
-        food_movement, status_code = find_food_movement(food_items)
-        return jsonify({"message": {"food_item" : food_items, "food_movement": food_movement}}), status_code
+        # food_movement, status_code = find_food_movement(food_items)
+        return jsonify({"message": {"food_item" : food_items, "food_movement": []}}), status_code
     else:
         return jsonify({"message": {"food_item" : food_items, "food_movement": []}}), status_code
     
 llm = Ollama(model="llama2")
 
 def get_expiry(name):
-    long_prompt = llm.invoke("Give me the shelf life of " + name + " in a refridgerator in days as an integer.")
-    date_index = long_prompt.rfind("days")
-    num_iterations = 1
-    while(date_index == -1 and num_iterations < 3):
-        long_prompt = llm.invoke("Give me the shelf life of " + name + " in a refridgerator in days as an integer.")
-        date_index = long_prompt.rfind("days")
-        num_iterations += 1
-    if (date_index == -1):
-         return datetime.date.today() + datetime.timedelta(days=5)
-    start_index = date_index - 2
-    while(1):
-        if not long_prompt[start_index].isnumeric():
-            break
-        start_index -= 1
-    date = long_prompt[start_index + 1:date_index - 1]
-    if not date.isnumeric():
-        datetime.date.today() + datetime.timedelta(days=5)
-    return datetime.date.today() + datetime.timedelta(days=int(date))
+  api_key = config.api_key
+  payload = {
+  "model": "gpt-3.5-turbo-0125",
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": f"Give me, only in the number of days in the format <name> - <days> days, the shelf life in a refrigerator of fresh\/unopenned {name} and if it is in weeks, convert it to days as well."
+        },
+      ]
+    }
+  ],
+  "max_tokens": 100
+}
+
+  headers = {
+      "Content-Type": "application/json",
+      "Authorization": f"Bearer {api_key}"
+  }
+
+  response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)  # Adjust URL as needed
+  content = response.json()['choices'][0]['message']['content']
+  long_prompt = list(map(str.strip, content.split(',')))
+  date_index = str(long_prompt).rfind("days")
+  start_index = date_index - 2
+  while(1):
+    if not str(long_prompt)[start_index].isnumeric():
+      break
+    start_index -= 1
+    date = str(long_prompt)[start_index + 1:date_index - 1]
+  if not date.isnumeric() or date == '':
+    return datetime.date.today() + datetime.timedelta(days=5)
+  return datetime.date.today() + datetime.timedelta(days=int(date))
 
 
 def get_type(name):
@@ -258,16 +272,18 @@ def can_add():
     if len(name.split()) > 3:
         return jsonify({"invalid": True })
     invalid_entries = ["sorry", "couldn't", "not", "unable"]
-    _, invalid_score = process.extractOne(name, invalid_entries, scorer=fuzz.token_set_ratio)
+    _, invalid_score = process.extractOne(name.lower(), invalid_entries, scorer=fuzz.token_set_ratio)
     if len(entries) == 0:
         if invalid_score >= 75:
             return jsonify({"invalid": True})
         else:
             return jsonify({"invalid": False, "name": name})
-    match, score = process.extractOne(name, entries, scorer=fuzz.token_set_ratio)
-    if invalid_score > score:
+    for idx, entry in enumerate(entries):
+        entries[idx] = entry.lower()
+    match, score = process.extractOne(name.lower(), entries, scorer=fuzz.token_set_ratio)
+    if invalid_score > 75:
         return jsonify({"invalid": True })
-    if score >= 75:
+    if score >= 50:
         return jsonify({"invalid": False, "name": match})
     else:
         return jsonify({"invalid": False, "name": name})
