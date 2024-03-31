@@ -51,8 +51,8 @@ export default function Home() {
         <div className="w-full max-w-sm space-y-10">
           <div>
             <img
-              className="mx-auto h-10 w-auto"
-              src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+              className="mx-auto h-32 w-auto"
+              src="logo.png"
               alt="Your Company"
             />
             <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
@@ -60,7 +60,7 @@ export default function Home() {
             </h2>
           </div>
           <form className="space-y-6" action="#" method="POST">
-            <div className="relative -space-y-px rounded-md shadow-sm">
+            <div className="relative -space-y-px">
               <div className="pointer-events-none absolute inset-0 z-10 rounded-md ring-1 ring-inset ring-gray-300" />
               <div>
                 <label htmlFor="email-address" className="sr-only">
@@ -72,7 +72,7 @@ export default function Home() {
                   type="email"
                   autoComplete="email"
                   required
-                  className="ml-2 relative block w-full rounded-t-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-100 placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                  className="pl-2 relative block w-full rounded-t-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-100 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                   placeholder="Email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -88,7 +88,7 @@ export default function Home() {
                   type="password"
                   autoComplete="current-password"
                   required
-                  className="ml-2 relative block w-full rounded-b-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-100 placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                  className="pl-2 relative block w-full rounded-b-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-100 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -106,13 +106,15 @@ export default function Home() {
             </div>
 
             <div>
-              <button
+              {/* <button
                 type="submit"
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 onClick={create ? handleCreateAccount : handleLogin}
-              >
-                { create ? "Create Account" : "Sign in" }
-              </button>
+              > */}
+              {/* </button> */}
+
+              <a href="home" className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"> { create ? "Create Account" : "Sign in" }</a>
+              
             </div>
           </form>
         </div>

@@ -57,7 +57,7 @@ const Home = () => {
           <div className="title__content">
             <div className="title__content__header">
               <img className="w-32 mr-5" src="logo.png"></img>
-              <h1 className={tourney.className}>Frozen AI</h1>
+              <h1 className={tourney.className}>Fridg.AI</h1>
             </div>
             <p>View your stored items in your refrigerator!</p>
             <div className="mt-8 sm:col-span-2">
@@ -86,7 +86,7 @@ const Home = () => {
                   </div>
                     <div className="item__content">
                       <h2 className="item__title">{records[i].itemName}</h2>
-                      <p className={formatAppDeadline(records[i].expiration) == "Expired" ? "red item__expiration" : "item__expiration"}>{formatAppDeadline(records[i].expiration)}</p>
+                      <p className={formatAppDeadline(records[i].expiration) == "Expired" ? "red item__expiration" : "item__expiration"}>{formatAppDeadline(records[i].expiration)} {records[i].status == "REMOVED" ? " - Removed" : ""}</p>
                     </div>
                   </div>
                   <div className={i + 1 != records.length ? "item" : "hide"}>
@@ -95,7 +95,7 @@ const Home = () => {
                   </div>
                     <div className="item__content"> 
                       <h2 className="item__title">{i + 1 != records.length ? records[i + 1].itemName : ""}</h2>
-                      <p className={i + 1 != records.length ? (formatAppDeadline(records[i + 1].expiration) == "Expired" ? "red item__expiration" : "item__expiration") : ""}>{i + 1 != records.length ? formatAppDeadline(records[i + 1].expiration) : ""}</p>
+                      <p className={i + 1 != records.length ? (formatAppDeadline(records[i + 1].expiration) == "Expired" ? "red item__expiration" : "item__expiration") : ""}>{i + 1 != records.length ? formatAppDeadline(records[i + 1].expiration) : ""} {i + 1 != records.length ? (records[i + 1].status == "REMOVED" ? " - Removed" : "") : ""}</p>
                     </div>
                   </div>
                 </div>   
@@ -118,7 +118,7 @@ const Home = () => {
         <div className="add" id="add">
           <div className="title__content text-white">
             <div className="title__content__header">
-              <h1 className={tourney.className}>Fridge View</h1>
+              <h1 className={tourney.className}>Fridg View</h1>
               <img className="w-32" src="logo.png"></img>
             </div>
           </div>
