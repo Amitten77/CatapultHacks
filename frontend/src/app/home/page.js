@@ -1,43 +1,45 @@
 "use client"
-
 import Video from '../video/page.js'
 import { Tourney } from "next/font/google";
 import React, { useRef, useState, useEffect } from 'react';
 
 const tourney = Tourney({ subsets: ["latin"] });
 
-const records = [
-  {
-    _id: 1,
-    image: 'logo.png',
-    title: 'Fresh Apple',
-    expiration: '2024-04-10'
-  },
-  {
-    _id: 2,
-    image: 'logo.png',
-    title: 'Chicken Sandwich',
-    expiration: '2024-04-05'
-  },
-  {
-    _id: 3,
-    image: 'logo.png',
-    title: 'Strawberry Box',
-    expiration: '2024-04-08'
-  },
-  {
-    _id: 4,
-    image: 'logo.png',
-    title: 'Chicken Sandwich',
-    expiration: '2024-04-05'
-  },
-  {
-    _id: 5,
-    image: 'logo.png',
-    title: 'Strawberry Box',
-    expiration: '2024-04-08'
-  }
-];
+/*
+["fruit", "vegetable", "drink", "leftovers", "condiment", "other"]
+*/
+// const records = [
+//   {
+//     _id: 1,
+//     image: 'logo.png',
+//     title: 'Fresh Apple',
+//     expiration: '2024-04-10'
+//   },
+//   {
+//     _id: 2,
+//     image: 'logo.png',
+//     title: 'Chicken Sandwich',
+//     expiration: '2024-04-05'
+//   },
+//   {
+//     _id: 3,
+//     image: 'logo.png',
+//     title: 'Strawberry Box',
+//     expiration: '2024-04-08'
+//   },
+//   {
+//     _id: 4,
+//     image: 'logo.png',
+//     title: 'Chicken Sandwich',
+//     expiration: '2024-04-05'
+//   },
+//   {
+//     _id: 5,
+//     image: 'logo.png',
+//     title: 'Strawberry Box',
+//     expiration: '2024-04-08'
+//   }
+// ];
 
 
 const Home = () => {
@@ -46,15 +48,32 @@ const Home = () => {
   let rect = 0;
 
   const [isTransitioned, setIsTransitioned] = useState(false);
+  const [records, setRecords] = useState([]);
 
-  let websiteLoop = setInterval(() => {
-    rect = elementRef.current.getBoundingClientRect();
-    if (rect.x < window.innerWidth * 0.5) {
-      setIsTransitioned(true);
-    } else {
-      setIsTransitioned(false);
-    }
-  }, 200);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/fridge');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setRecords(data); // Store the records in state
+      } catch (error) {
+        console.error("Could not fetch the data", error);
+      }
+    };
+    fetchData();
+  }, [])
+
+  // let websiteLoop = setInterval(() => {
+  //   rect = elementRef.current.getBoundingClientRect();
+  //   if (rect.x < window.innerWidth * 0.5) {
+  //     setIsTransitioned(true);
+  //   } else {
+  //     setIsTransitioned(false);
+  //   }
+  // }, 200);
 
   return (
     <div>
@@ -91,9 +110,17 @@ const Home = () => {
             })}
           </div>
         </div>
-        <a href={isTransitioned ? "#list" : "#add"} className="transition" ref={elementRef}>
+        {/* <a href={isTransitioned ? "#list" : "#add"} className="transition" ref={elementRef}>
           <p className="transition__button">{!isTransitioned ? "<" : ">"}</p>
+        </a> */}
+        <a href="#list" className="transition">
+          <p className="transition__button">{">"}</p>
         </a>
+        <a href="#add" className="transition">
+          <p className="transition__button">{"<"}</p>
+        </a>
+
+        
         <div className="add" id="add">
           <div className="title__content text-white">
             <div className="title__content__header">
